@@ -1,0 +1,29 @@
+{
+  "name": "http-api-assignment",
+  "version": "1.0.0",
+  "description": "API Assignment #1",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nrw6218/http-api-assignment.git"
+  },
+  "author": "Nikolas Whiteside",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nrw6218/http-api-assignment/issues"
+  },
+  "homepage": "https://github.com/nrw6218/http-api-assignment#readme",
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "dependencies": {
+    "query-string": "^6.1.0"
+  }
+}

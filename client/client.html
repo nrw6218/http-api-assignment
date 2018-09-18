@@ -6,26 +6,109 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
+    const handleResponse = (xhr, parseResponse) => {
+      const content = document.querySelector('#content');
+      const type = xhr.getResponseHeader('content-type');
+      
+      let message = '';
+      if (parseResponse && type == 'application/json') {
+        message = JSON.parse(xhr.response).message;
+      }
+      if (type == 'text/xml') {
+        message = xhr.responseXML.querySelector('message').textContent;
+      }
 
+      switch (xhr.status) {
+        case 200: //if success
+          content.innerHTML = `<b>Success</b><p>${message}</p>`;
+          break;
+        case 400: //if bad request
+          content.innerHTML = `<b>Bad Request</b><p>${message}</p>`;
+          break;
+        case 401: //if unauthorized
+          content.innerHTML = `<b>Unauthorized</b><p>${message}</p>`;
+          break;
+        case 403: //if forbidden
+          content.innerHTML = `<b>Forbidden</b><p>${message}</p>`;
+          break;
+        case 404: //if not found
+          content.innerHTML = `<b>Resource Not Found</b><p>${message}</p>`;
+          break;
+        case 500: //if internal
+          content.innerHTML = `<b>Internal</b><p>${message}</p>`;
+          break;
+        case 501: //if not implemented
+          content.innerHTML = `<b>Not Implemented</b><p>${message}</p>`;
+          break;
+        default: //any other status
+          content.innerHTML = `Error code not implemented by client.`;
+          break;
+      }
+    };
+
+    //function to send request
+    const requestUpdate = (e, userForm) => {
+      //grab url field 
+      const url = userForm.querySelector('#page').value;
+      //grab type selected
+      const type = userForm.querySelector('#type').value;
+      
+      //create a new AJAX request (asynchronous)
+      const xhr = new XMLHttpRequest();
+      //setup connect using the selected method and url
+      xhr.open('get', url);
+      //set accept header in request to application/json
+      //The accept header is a comma separated list of
+      //accepted response types in order of preference
+      //from first to last. You only need to send one
+      //but you can send many, separated by commas.
+      xhr.setRequestHeader('Accept', type);
+
+      //set onload to parse request and get json message
+      xhr.onload = () => handleResponse(xhr, true);
+      
+      //send ajax request
+      xhr.send();
+      
+      //cancel browser's default action
+      e.preventDefault();
+      //return false to prevent page redirection from a form
+      return false;
+    };
+
+    const init = () => {
+      //grab form
+      const userForm = document.querySelector('#top');
+      
+      //function to handle our request
+      const getResponses = (e) => requestUpdate(e, userForm);
+      
+      //add event listener
+      userForm.addEventListener('submit', getResponses);
+    };
+
+    window.onload = init;
   </script>
 </head>
 <body>
   <section id="top">
     <h3>Status Code Tests</h3>
-    <select id="page">
-      <option value="/success">Success</option>
-      <option value="/badRequest">Bad Request</option>
-      <option value="/unauthorized">Unauthorized</option>
-      <option value="/forbidden">Forbidden</option>
-      <option value="/internal">Internal</option>
-      <option value="/notImplemented">Not Implemented</option>
-      <option value="/notFound">Not Found</option>
-    </select>
-    <select id="type">
-      <option value="application/json">JSON</option>
-      <option value="text/xml">XML</option>
-    </select>
-    <button id="send">Send</button>
+    <form id="userForm" method="get">
+      <select id="page">
+        <option value="/success">Success</option>
+        <option value="/badRequest">Bad Request</option>
+        <option value="/unauthorized">Unauthorized</option>
+        <option value="/forbidden">Forbidden</option>
+        <option value="/internal">Internal</option>
+        <option value="/notImplemented">Not Implemented</option>
+        <option value="/notFound">Not Found</option>
+      </select>
+      <select id="type">
+        <option value="application/json">JSON</option>
+        <option value="text/xml">XML</option>
+      </select>
+      <button id="send">Send</button>
+    </form>
   </section>
   <section id="content">
   </section>
