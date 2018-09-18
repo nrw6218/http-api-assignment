@@ -1,7 +1,7 @@
 const http = require('http'); // http module
 const url = require('url'); // url module
 const queryString = require('query-string');
-const htmlHandler = require('./htmlResponses.js');
+const htmlHandler = require('./htmlresponses.js');
 const jsonHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
